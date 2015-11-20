@@ -1,34 +1,56 @@
 define([
-	'jquery', 
-	'underscore', 
+	'jquery',
+	'underscore',
 	'backbone',
-	'views/mainView'
-	], function($, _, Backbone, MainView) {
+	'views/mainView',
+	'views/otherView'
+	], function($, _, Backbone, MainView, OtherView) {
 
 	var AppRouter = Backbone.Router.extend({
+
+		initialize: function() {
+			this.appView = new AppView();
+			Backbone.history.start();
+		},
+
 		routes: {
 
-			// Default
-			'*actions': 'defaultAction'	
+			'': 'mainView',
+			'main': 'mainView',
+			'other': 'otherView',
+				// Default
+			'*actions': 'defaultAction'
+		},
+
+		mainView: function() {
+			var mainView = new MainView();
+			this.appView.showView(mainView);
+		},
+
+		otherView: function() {
+			var otherView = new OtherView();
+			this.appView.showView(otherView);
+		},
+
+		defaultAction: function() {
+			var mainView = new MainView();
+			this.appView.showView(mainView);
 		}
+
 	});
 
-	var initialize = function(){
+	function AppView() {
+		this.showView = function(view) {
+			if (this.currentView) {
+				this.currentView.close();
+			}
 
-		var app_router = new AppRouter;
+			this.currentView = view;
+			this.currentView.render();
+			$('.content').html(this.currentView.el);
+		}
+	}
 
-		app_router.on('route:defaultAction', function(actions) {
-
-			var mainView = new MainView();
-			mainView.render();
-
-		});
-
-		Backbone.history.start();
-	};
-
-	return {
-		initialize: initialize
-	};
+	return AppRouter;
 
 });

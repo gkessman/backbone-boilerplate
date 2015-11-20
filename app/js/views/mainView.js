@@ -7,12 +7,16 @@ define([
 
 	var MainView = Backbone.View.extend({
 
-		el: $('.content'),
-
 		render: function() {
-			console.log("This is the main view!");
+			console.log("main view render");
 			this.$el.html(MainTemplate);
+		},
+
+		close: function() {
+			this.remove();
+			this.unbind();
 		}
+		
 	});
 
 	return MainView;
